@@ -12,7 +12,12 @@ FROM abrarov/msvc-2019:2.12.1
 #RUN choco install visualstudio2019buildtools --version=16.10.4.0 -y --params "--quiet --norestart --wait --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.Llvm.ClangToolset --add Microsoft.VisualStudio.Component.VC.Llvm.Clang --add Microsoft.VisualStudio.Component.VC.CLI.Support --add Microsoft.VisualStudio.Component.Windows10SDK.19041 --add Microsoft.Net.Component.3.5.DeveloperTools --add Microsoft.Net.Component.4.6.TargetingPack --add Microsoft.Net.Component.4.6.1.TargetingPack --add Microsoft.Net.ComponentGroup.4.6.1.DeveloperTools"
 #RUN choco install visualstudio2019buildtools --version=16.10.4.0 -y --params "--quiet --norestart --wait --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CLI.Support --add Microsoft.VisualStudio.Component.Windows10SDK.19041 --add Microsoft.Net.Component.3.5.DeveloperTools --add Microsoft.Net.Component.4.6.TargetingPack --add Microsoft.Net.Component.4.6.1.TargetingPack --add Microsoft.Net.ComponentGroup.4.6.1.DeveloperTools"
 
-# Install .NET Framework 4.6 Developer Pack (https://docs.microsoft.com/en-gb/dotnet/framework/deployment/guide-for-administrators#create-a-package-and-program-for-the-net-framework-redistributable-package)
+# Install .NET Framework 4.8 Developer Pack (https://dotnet.microsoft.com/download/dotnet-framework/net48)
+RUN curl -fSLo net4.8.exe https://go.microsoft.com/fwlink/?linkid=2088517 \
+    && net4.8.exe /q /norestart \
+    && del /F /Q net4.8.exe
+
+# Install .NET Framework 4.6 Developer Pack (https://dotnet.microsoft.com/download/dotnet-framework/net46)
 RUN curl -fSLo net4.6.exe https://go.microsoft.com/fwlink/?linkid=2099469 \
     && net4.6.exe /q /norestart \
     && del /F /Q net4.6.exe
@@ -46,7 +51,7 @@ RUN aqt install 5.15.2 windows desktop win64_msvc2019_64 -m qtwebengine --output
 #    New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 
 # Download mob
-RUN mkdir C:\dev && git clone https://github.com/ModOrganizer2/mob C:\dev\mob
+RUN mkdir C:\dev && git clone https://github.com/erri120/mob.git C:\dev\mob -b sip-codepage
 
 # Bootstrap
 RUN powershell.exe -Command C:\dev\mob\bootstrap.ps1
