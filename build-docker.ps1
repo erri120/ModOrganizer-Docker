@@ -1,0 +1,1 @@
+docker build -t erri120/modorganizer:latest --isolation=hyperv .
