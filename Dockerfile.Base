@@ -1,5 +1,4 @@
 # escape=\
-
 FROM mcr.microsoft.com/windows/servercore:20H2-amd64
 
 # Install .NET Fx 3.5 (https://github.com/microsoft/dotnet-framework-docker/blob/171551180e2adefca869fe3804b3554da4e09a5c/src/runtime/3.5/windowsservercore-20H2/Dockerfile)
@@ -40,29 +39,3 @@ RUN pip install aqtinstall==1.2.4
 
 # Install Qt 5.15.2 with aqt
 RUN aqt install 5.15.2 windows desktop win64_msvc2019_64 -m qtwebengine --outputdir C:\Qt
-
-# Install OpenSSH Server 8.6.0-beta1 (https://community.chocolatey.org/packages/openssh/8.6.0-beta1)
-RUN choco install openssh --version=8.6.0-beta1 -y --params "'/SSHServerFeature /AlsoLogToFile /SSHLogLevel:DEBUG2'"
-
-# Setup OpenSSH
-RUN net user docker /add \
-    && net localgroup administrators docker /add \
-    && powershell -Command New-Item -Type File -Path C:\ProgramData\ssh\administrators_authorized_keys; \
-    Set-Acl C:\ProgramData\ssh\administrators_authorized_keys -AclObject (Get-Acl C:\ProgramData\ssh\ssh_host_dsa_key)
-
-# Download mob@f5c0b3e22320df2e31289c98efe23053f19b775c (https://github.com/ModOrganizer2/mob)
-RUN mkdir C:\dev \
-    && curl -fSLo mob.zip https://github.com/ModOrganizer2/mob/archive/f5c0b3e22320df2e31289c98efe23053f19b775c.zip \
-    && tar -zxf mob.zip \
-    && del /F /Q mob.zip \
-    && move mob-f5c0b3e22320df2e31289c98efe23053f19b775c C:\dev\mob \
-    && powershell Remove-Item -Force -Recurse ${Env:TEMP}\*
-
-# Bootstrap
-RUN powershell -Command C:\dev\mob\bootstrap.ps1
-
-# Build
-#RUN C:\dev\mob\mob.exe -l5 -d C:\dev\modorganizer build
-
-# OpenSSH Server
-EXPOSE 22/tcp
