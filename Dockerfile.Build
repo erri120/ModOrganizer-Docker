@@ -1,0 +1,3 @@
+FROM erri120/modorganizer-base:latest
+
+CMD [ "C:/dev/mob/mob.exe", "-l5", "-d", "C:/dev/modorganizer", "build" ]

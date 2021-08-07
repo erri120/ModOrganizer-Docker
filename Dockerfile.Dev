@@ -9,16 +9,5 @@ RUN net user docker /add \
     && powershell -Command New-Item -Type File -Path C:\ProgramData\ssh\administrators_authorized_keys; \
     Set-Acl C:\ProgramData\ssh\administrators_authorized_keys -AclObject (Get-Acl C:\ProgramData\ssh\ssh_host_dsa_key)
 
-# Download mob@f5c0b3e22320df2e31289c98efe23053f19b775c (https://github.com/ModOrganizer2/mob)
-RUN mkdir C:\dev \
-    && curl -fSLo mob.zip https://github.com/ModOrganizer2/mob/archive/f5c0b3e22320df2e31289c98efe23053f19b775c.zip \
-    && tar -zxf mob.zip \
-    && del /F /Q mob.zip \
-    && move mob-f5c0b3e22320df2e31289c98efe23053f19b775c C:\dev\mob \
-    && powershell Remove-Item -Force -Recurse ${Env:TEMP}\*
-
-# Bootstrap
-RUN powershell -Command C:\dev\mob\bootstrap.ps1
-
 # OpenSSH Server
 EXPOSE 22/tcp

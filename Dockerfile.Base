@@ -39,3 +39,36 @@ RUN pip install aqtinstall==1.2.4
 
 # Install Qt 5.15.2 with aqt
 RUN aqt install 5.15.2 windows desktop win64_msvc2019_64 -m qtwebengine --outputdir C:\Qt
+
+# Download mob@f5c0b3e22320df2e31289c98efe23053f19b775c (https://github.com/ModOrganizer2/mob)
+# TODO: use ARG for a specific commit
+RUN mkdir C:\dev \
+    && curl -fSLo mob.zip https://github.com/ModOrganizer2/mob/archive/f5c0b3e22320df2e31289c98efe23053f19b775c.zip \
+    && tar -zxf mob.zip \
+    && del /F /Q mob.zip \
+    && move mob-f5c0b3e22320df2e31289c98efe23053f19b775c C:\dev\mob \
+    && powershell Remove-Item -Force -Recurse ${Env:TEMP}\*
+
+# Bootstrap
+RUN powershell -Command C:\dev\mob\bootstrap.ps1
+
+# Build dependencies
+RUN C:\dev\mob\mob.exe -l5 -d C:\dev\modorganizer build \
+    sevenz \
+    zlib \
+    fmt \
+    gtest \
+    libbsarch \
+    libloot \
+    openssl \
+    libffi \
+    bzip2 \
+    nmm \
+    python \
+    boost \
+    boostdi \
+    lz4 \
+    spdlog \
+    sip \
+    ncc \
+    pyqt
