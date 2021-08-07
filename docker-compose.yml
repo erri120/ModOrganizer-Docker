@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  modorganizer:
+    image: erri120/modorganizer-dev:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.Dev
+    isolation: "hyperv"
+    container_name: "ModOrganizer"
+    ports:
+      - "9999:22" # maps port 9999 on your local machine to the OpenSSH port 22 in the container
+    tty: true
+    restart: "no"
