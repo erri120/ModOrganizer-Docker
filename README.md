@@ -16,3 +16,13 @@ Make sure you have the Hyper-V features active and add `--isolation=hyperv` to t
 `Error response from daemon: hcsshim::CreateComputeSystem <some-id>: The request is not supported.`: Restart your system. This error occurred after enabling Windows containers and not restarting the system.
 
 `re-exec error: exit status 1: output: hcsshim::ImportLayer - failed failed in Win32: The system cannot find the path specified. (0x3)`: Delete all Images in Docker Desktop and use [docker-ci-zap](https://github.com/moby/docker-ci-zap) in an elevated terminal: `.\docker-ci-zap.exe -folder C:\ProgramData\Docker\windowsfilter`.
+
+## Sending SSH keys to the Container
+
+### Using docker exec
+
+You can use `docker exec` to execute any command inside the container. I have created a helper script [send-ssh-key.ps1](send-ssh-key.ps1) that will send your public SSH key of choice to the container using this method. The scripts requires the ID of the container, which you can obtain by using `docker ps`, and the name of the public key file in `~/.ssh/<name>`, eg: `id_rsa.pub`:
+
+```powershell
+.\send-ssh-key.ps1 -KeyFile id_rsa.pub -ContainerId 29a1f09cea0
+```

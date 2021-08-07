@@ -41,8 +41,14 @@ RUN pip install aqtinstall==1.2.4
 # Install Qt 5.15.2 with aqt
 RUN aqt install 5.15.2 windows desktop win64_msvc2019_64 -m qtwebengine --outputdir C:\Qt
 
-# Install OpenSSH Server 8.0.0.1 (https://community.chocolatey.org/packages/openssh/8.0.0.1)
-RUN choco install openssh --version=8.0.0.1 -y --params "/SSHServerFeature"
+# Install OpenSSH Server 8.6.0-beta1 (https://community.chocolatey.org/packages/openssh/8.6.0-beta1)
+RUN choco install openssh --version=8.6.0-beta1 -y --params "'/SSHServerFeature /AlsoLogToFile /SSHLogLevel:DEBUG2'"
+
+# Setup OpenSSH
+RUN net user docker /add \
+    && net localgroup administrators docker /add \
+    && powershell -Command New-Item -Type File -Path C:\ProgramData\ssh\administrators_authorized_keys; \
+    Set-Acl C:\ProgramData\ssh\administrators_authorized_keys -AclObject (Get-Acl C:\ProgramData\ssh\ssh_host_dsa_key)
 
 # Download mob@f5c0b3e22320df2e31289c98efe23053f19b775c (https://github.com/ModOrganizer2/mob)
 RUN mkdir C:\dev \
@@ -58,4 +64,5 @@ RUN powershell -Command C:\dev\mob\bootstrap.ps1
 # Build
 #RUN C:\dev\mob\mob.exe -l5 -d C:\dev\modorganizer build
 
-EXPOSE 22
+# OpenSSH Server
+EXPOSE 22/tcp
